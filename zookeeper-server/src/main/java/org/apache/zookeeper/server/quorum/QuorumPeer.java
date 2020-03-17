@@ -906,6 +906,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
                     }
                 } else {
                     p = new RemotePeerBean(s);
+
                     try {
                         MBeanRegistry.getInstance().register(p, jmxQuorumBean);
                     } catch (Exception e) {
