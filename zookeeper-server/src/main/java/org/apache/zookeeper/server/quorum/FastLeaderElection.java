@@ -821,7 +821,7 @@ public class FastLeaderElection implements Election {
             int notTimeout = finalizeWait;
 
             synchronized (this) {
-                //新一轮投票：逻辑时钟->epoch  +1
+                //新一轮投票：逻辑时钟+1
                 logicalclock.incrementAndGet();
                 //proposal
                 //getInitId() = myId
@@ -839,8 +839,7 @@ public class FastLeaderElection implements Election {
              */
 
             //接收到了票据
-            while ((self.getPeerState() == ServerState.LOOKING) &&
-                    (!stop)) {
+            while ((self.getPeerState() == ServerState.LOOKING) && (!stop)) {
                 /*
                  * Remove next notification from queue, times out after 2 times
                  * the termination time

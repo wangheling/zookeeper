@@ -63,7 +63,7 @@ public class QuorumPeerConfig {
     protected int electionAlg = 3;
     protected int electionPort = 2182;
     protected boolean quorumListenOnAllIPs = false;
-    //集群其他机器
+    //集群机器
     protected final HashMap<Long,QuorumServer> servers =
         new HashMap<Long, QuorumServer>();
     //observers
@@ -193,13 +193,16 @@ public class QuorumPeerConfig {
             } else if (key.equals("syncLimit")) {
                 syncLimit = Integer.parseInt(value);
             } else if (key.equals("electionAlg")) {
+                //选举算法
                 electionAlg = Integer.parseInt(value);
             } else if (key.equals("quorumListenOnAllIPs")) {
                 quorumListenOnAllIPs = Boolean.parseBoolean(value);
             } else if (key.equals("peerType")) {
                 if (value.toLowerCase().equals("observer")) {
+                    //observer角色
                     peerType = LearnerType.OBSERVER;
                 } else if (value.toLowerCase().equals("participant")) {
+                    //参与者：leader or follower
                     peerType = LearnerType.PARTICIPANT;
                 } else
                 {
@@ -212,7 +215,11 @@ public class QuorumPeerConfig {
             } else if (key.equals("autopurge.purgeInterval")) {
                 purgeInterval = Integer.parseInt(value);
             } else if (key.startsWith("server.")) {
+
+                //集群配置
+
                 int dot = key.indexOf('.');
+                //myid
                 long sid = Long.parseLong(key.substring(dot + 1));
                 String parts[] = splitWithLeadingHostname(value);
                 if ((parts.length != 2) && (parts.length != 3) && (parts.length !=4)) {
@@ -221,13 +228,17 @@ public class QuorumPeerConfig {
                        " or host:port:port:type");
                 }
                 LearnerType type = null;
+                //ip
                 String hostname = parts[0];
+                //端口
                 Integer port = Integer.parseInt(parts[1]);
                 Integer electionPort = null;
                 if (parts.length > 2){
+                    //参与选举时的端口 host:port:port
                 	electionPort=Integer.parseInt(parts[2]);
                 }
                 if (parts.length > 3){
+                    //host:port:port:type
                     if (parts[3].toLowerCase().equals("observer")) {
                         type = LearnerType.OBSERVER;
                     } else if (parts[3].toLowerCase().equals("participant")) {
@@ -393,11 +404,14 @@ public class QuorumPeerConfig {
                 quorumVerifier = new QuorumHierarchical(numGroups,
                         serverWeight, serverGroup);
             } else {
+
                 /*
                  * The default QuorumVerifier is QuorumMaj
+                 * 默认
                  */
 
                 LOG.info("Defaulting to majority quorums");
+                //后续的决断时候，过半票数，half = serviers.size() / 2
                 quorumVerifier = new QuorumMaj(servers.size());
             }
 

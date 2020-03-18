@@ -4,6 +4,8 @@
 
 3.4.14
 
-## zk启动&选举源码入口
+## zookeeper启动&选举源码入口
 
 org.apache.zookeeper.server.quorum.QuorumPeerMain.main
+
+### zoo.cfg配置文件

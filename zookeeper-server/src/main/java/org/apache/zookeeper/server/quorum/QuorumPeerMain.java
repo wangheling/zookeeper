@@ -107,7 +107,7 @@ public class QuorumPeerMain {
             config.parse(args[0]);
         }
 
-        // ()Start and schedule the the purge task
+        // ()Start and schedule the the purge task 日志清理线程
         DatadirCleanupManager purgeMgr = new DatadirCleanupManager(config
                 .getDataDir(), config.getDataLogDir(), config
                 .getSnapRetainCount(), config.getPurgeInterval());
@@ -143,9 +143,8 @@ public class QuorumPeerMain {
             //getView()
             //zoo.cfg里面解析的servers节点，集群里所有Server
             quorumPeer.setQuorumPeers(config.getServers());
-            quorumPeer.setTxnFactory(new FileTxnSnapLog(
-                    new File(config.getDataLogDir()),
-                    new File(config.getDataDir())));
+            quorumPeer.setTxnFactory(new FileTxnSnapLog(new File(config.getDataLogDir()), new File(config.getDataDir())));
+            //选举算法
             quorumPeer.setElectionType(config.getElectionAlg());
             //myId:机器id
             quorumPeer.setMyid(config.getServerId());
@@ -153,12 +152,14 @@ public class QuorumPeerMain {
             quorumPeer.setInitLimit(config.getInitLimit());
             quorumPeer.setSyncLimit(config.getSyncLimit());
             quorumPeer.setQuorumListenOnAllIPs(config.getQuorumListenOnAllIPs());
-            quorumPeer.setCnxnFactory(cnxnFactory);// 设置cnxnFacotory
+            quorumPeer.setCnxnFactory(cnxnFactory);
+            //选举leader最后的决断时刻用到
             quorumPeer.setQuorumVerifier(config.getQuorumVerifier());
             quorumPeer.setClientPortAddress(config.getClientPortAddress());
             quorumPeer.setMinSessionTimeout(config.getMinSessionTimeout());
             quorumPeer.setMaxSessionTimeout(config.getMaxSessionTimeout());
             quorumPeer.setZKDatabase(new ZKDatabase(quorumPeer.getTxnFactory()));
+            //observer or paticipant
             quorumPeer.setLearnerType(config.getPeerType());
             quorumPeer.setSyncEnabled(config.getSyncEnabled());
 
@@ -174,9 +175,11 @@ public class QuorumPeerMain {
 
             quorumPeer.setQuorumCnxnThreadsSize(config.quorumCnxnThreadsSize);
             quorumPeer.initialize();
+
             //执行quorumPeer的run方法，重写了Thread的start。也就是在线程启动之前，会做一些操作
             quorumPeer.start();
-            // 等待quorumPeer线程执行完
+
+            //等待quorumPeer线程执行完
             quorumPeer.join();
         } catch (InterruptedException e) {
             // warn, but generally this is ok
