@@ -52,6 +52,7 @@ import org.apache.zookeeper.server.quorum.ReadOnlyZooKeeperServer;
 import org.apache.zookeeper.server.util.OSMXBean;
 
 /**
+ * 通过Nio和客户端进行通信
  * This class handles communication with clients using NIO. There is one per
  * client, but only one thread doing the communication.
  */

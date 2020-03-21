@@ -398,7 +398,10 @@ public class ClientCnxn {
         readTimeout = sessionTimeout * 2 / 3;
         readOnly = canBeReadOnly;
 
+        //负责客户端和服务端的数据通信，也包括事件信息的传输
         sendThread = new SendThread(clientCnxnSocket);
+
+        //主要在客户端回调注册的Watchers进行通知处理
         eventThread = new EventThread();
 
     }
